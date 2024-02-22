@@ -1,11 +1,68 @@
-# .circleci/config.yml
 version: 2.1
+
+# Définition des jobs réutilisables
 orbs:
   node: circleci/node@5
+
+# Définition des jobs pour chaque étape du pipeline CI/CD
 jobs:
-  # First job declared is for building things..
+  # Étape de build
   build:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Building things..."
+      - run: echo "Installation des dépendances..."
+      - run: echo "Analyse du code..."
+      - run: echo "Cleaning et Packaging..."
+
+  # Étape de tests
+  tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Tests unitaires..."
+      - run: echo "Tests d'intégration..."
+      - run: echo "Tests de régression..."
+      - run: echo "Tests de performance..."
+      - run: echo "Tests de sécurité..."
+      - run: echo "Tests de compatibilité..."
+      - run: echo "Tests d'accessibilité..."
+
+  # Étape de déploiement sur l'environnement de développement
+  deploy_dev:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Déploiement vers l'environnement de développement..."
+
+  # Étape de déploiement sur l'environnement de production
+  deploy_prod:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Déploiement vers l'environnement de production..."
+
+# Définition des workflows
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      # Étapes du pipeline CI/CD
+      - build
+      - tests:
+          requires:
+            - build
+      - deploy_dev:
+          requires:
+            - tests
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy_prod:
+          requires:
+            - tests
+          filters:
+            branches:
+              only:
+                - main
