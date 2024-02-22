@@ -3,89 +3,122 @@
 version: 2.1
 orbs:
   node: circleci/node@5
+
+# Jobs for different stages
 jobs:
+  # Job to install dependencies
   dependencies_install:
     executor: node/default
     steps:
       - checkout
       - run: echo "installing dependencies"
+
+  # Job for code analysis
   code_analysing:
     executor: node/default
     steps:
       - checkout
-      - run: echo "code analysing ..."
+      - run: echo "code analyzing ..."
+
+  # Job for cleaning and packaging
   cleaning_packaging:
     executor: node/default
     steps:
       - checkout
       - run: echo "cleaning and packaging ..."
-  #################################################
+
+  # Unit tests job
   unit_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "unit tests"
+
+  # Integration tests job
   integration_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "integration tests"
+
+  # Regression tests job
   regression_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "regression tests"
+
+  # Performance tests job
   performance_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "performance tests"
+
+  # Security tests job
   security_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "security tests"
+
+  # Access tests job
   access_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "access tests"
-  #################################################################
+
+  # Preparing and deploying environment job
   preparing_deploying_environment:
     executor: node/default
     steps:
       - checkout
       - run: echo "preparation of deploying environment"
+
+  # Application deployment job
   application_deployement:
     executor: node/default
     steps:
       - checkout
-      - run: echo "application deployement"
+      - run: echo "application deployment"
+
+  # Verification tests job
   verification_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "verification tests"
+
+  # Functioning validation tests job
   functionning_validation_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "functionning validation tests"
+      - run: echo "functioning validation tests"
+
+  # Charge tests job
   charge_tests:
     executor: node/default
     steps:
       - checkout
       - run: echo "charge tests"
+
+  # Deploy to development environment job
   deploy_dev:
     executor: node/default
     steps:
       - checkout
       - run: echo "Deploying to development environment"
+
+  # Deploy to production environment job
   deploy_prod:
     executor: node/default
     steps:
       - checkout
       - run: echo "Deploying to production environment"
+
+  # Monitoring job
   monitoring:
     executor: node/default
     steps:
@@ -93,13 +126,14 @@ jobs:
       - run: echo "monitoring"
 
 ###################################################################
+# Workflow to organize and execute jobs
 workflows:
   build-test-deploy:
     jobs:
+      # Define job dependencies and execution order
       - dependencies_install
       - code_analysing
       - cleaning_packaging
-      ##############
       - unit_tests:
           requires:
             - dependencies_install
@@ -158,7 +192,7 @@ workflows:
           filters:
             branches:
               only:
-                -master
+                - master
       ###############
       - preparing_deploying_environment:
           requires:
@@ -269,33 +303,3 @@ workflows:
               ignore:
                 - /feature\//*/
                 - /hotfix\//*/
-
-
-
-
-
-
-
-
-
-      # - build
-      # - unit-tests:
-      #     requires:
-      #       - build
-      # - deploy:
-      #     requires:
-      #       - unit-tests
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - /feature\//*/
-      #           - /hotfix\//*/
-      #           - master
-      # - deploy_prod:
-      #     requires:
-      #       - unit-tests
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
-                
