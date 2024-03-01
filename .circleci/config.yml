@@ -1,125 +1,101 @@
+# .circleci/config.yml
+
 version: 2.1
 orbs:
   node: circleci/node@5
-
 jobs:
   dependencies_install:
     executor: node/default
     steps:
       - checkout
-      # Installing project dependencies
       - run: echo "installing dependencies"
-
   code_analysing:
     executor: node/default
     steps:
       - checkout
-      # Running code analysis
-      - run: echo "code analyzing ..."
-
+      - run: echo "code analysing ..."
   cleaning_packaging:
     executor: node/default
     steps:
       - checkout
-      # Cleaning and packaging the code
       - run: echo "cleaning and packaging ..."
-
+  #################################################
   unit_tests:
     executor: node/default
     steps:
       - checkout
-      # Running unit tests
       - run: echo "unit tests"
-
   integration_tests:
     executor: node/default
     steps:
       - checkout
-      # Running integration tests
       - run: echo "integration tests"
-
   regression_tests:
     executor: node/default
     steps:
       - checkout
-      # Running regression tests
       - run: echo "regression tests"
-
   performance_tests:
     executor: node/default
     steps:
       - checkout
-      # Running performance tests
       - run: echo "performance tests"
-
   security_tests:
     executor: node/default
     steps:
       - checkout
-      # Running security tests
       - run: echo "security tests"
-
   access_tests:
     executor: node/default
     steps:
       - checkout
-      # Running access tests
       - run: echo "access tests"
-
+  #################################################################
+  
   preparing_deploying_environment:
     executor: node/default
     steps:
       - checkout
-      # Preparing the deployment environment
       - run: echo "preparation of deploying environment"
-
   application_deployement:
     executor: node/default
     steps:
       - checkout
-      # Deploying the application
-      - run: echo "application deployment"
-
+      - run: echo "application deployement"
   verification_tests:
     executor: node/default
     steps:
       - checkout
-      # Running verification tests
       - run: echo "verification tests"
-
   functionning_validation_tests:
     executor: node/default
     steps:
       - checkout
-      # Running functioning validation tests
-      - run: echo "functioning validation tests"
-
+      - run: echo "functionning validation tests"
   charge_tests:
     executor: node/default
     steps:
       - checkout
-      # Running charge tests
       - run: echo "charge tests"
-
   deploy_dev:
     executor: node/default
     steps:
       - checkout
-      # Deploying to development environment
       - run: echo "Deploying to development environment"
-
   deploy_prod:
     executor: node/default
     steps:
       - checkout
-      # Deploying to production environment
       - run: echo "Deploying to production environment"
-
+  deploy_release:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Deploying to release environment"
   monitoring:
     executor: node/default
     steps:
       - checkout
-      # Monitoring the application
       - run: echo "monitoring"
 
 ###################################################################
@@ -135,12 +111,6 @@ workflows:
             - dependencies_install
             - code_analysing
             - cleaning_packaging
-          filters:
-            branches:
-              ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
-
       - integration_tests:
           requires:
             - dependencies_install
@@ -149,8 +119,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - regression_tests:
           requires:
@@ -160,8 +130,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - performance_tests:
           requires:
@@ -171,8 +141,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - security_tests:
           requires:
@@ -188,7 +158,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                -master
       ###############
       - preparing_deploying_environment:
           requires:
@@ -201,8 +171,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - application_deployement:
           requires:
@@ -215,8 +185,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - verification_tests:
           requires:
@@ -229,8 +199,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - functionning_validation_tests:
           requires:
@@ -243,8 +213,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - charge_tests:
           requires:
@@ -257,8 +227,8 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
 
       - deploy_dev:
           requires:
@@ -285,7 +255,18 @@ workflows:
             branches:
               only:
                 - master
-
+      - deploy_release:
+          requires:
+            - unit_tests
+            - integration_tests
+            - regression_tests
+            - performance_tests
+            - security_tests
+            - access_tests
+          filters:
+            branches:
+              only:
+                - /^release\/.*$/
       - monitoring:
           requires:
             - unit_tests
@@ -297,5 +278,5 @@ workflows:
           filters:
             branches:
               ignore:
-                - /feature\/\/*/
-                - /hotfix\/\/*/
+                - /^feature\/.*$/
+                - /^hotfix\/.*$/
