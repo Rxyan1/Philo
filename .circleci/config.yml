@@ -1,166 +1,199 @@
-# .circleci/config.yml
-
 version: 2.1
+
+# Orbs declaration
 orbs:
   node: circleci/node@5
+
+# Job definitions
 jobs:
-  dependencies_install:
+  # Job to install project dependencies
+  install_dependencies:
     executor: node/default
     steps:
       - checkout
-      - run: echo "installing dependencies"
-  code_analysing:
+      - run: echo "Installing project dependencies..."
+
+  # Job to analyze the project's code
+  code_analysis:
     executor: node/default
     steps:
       - checkout
-      - run: echo "code analysing ..."
-  cleaning_packaging:
+      - run: echo "Performing code analysis..."
+
+  # Job to clean and package the project
+  clean_package:
     executor: node/default
     steps:
       - checkout
-      - run: echo "cleaning and packaging ..."
-  #################################################
+      - run: echo "Cleaning and packaging the project..."
+
+  # Job to run unit tests
   unit_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "unit tests"
+      - run: echo "Running unit tests..."
+
+  # Job to run integration tests
   integration_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "integration tests"
+      - run: echo "Running integration tests..."
+
+  # Job to run regression tests
   regression_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "regression tests"
+      - run: echo "Running regression tests..."
+
+  # Job to run performance tests
   performance_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "performance tests"
+      - run: echo "Running performance tests..."
+
+  # Job to run security tests
   security_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "security tests"
+      - run: echo "Running security tests..."
+
+  # Job to run access tests
   access_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "access tests"
-  #################################################################
-  
-  preparing_deploying_environment:
+      - run: echo "Running access tests..."
+
+  # Job to prepare the deployment environment
+  prepare_deploy_env:
     executor: node/default
     steps:
       - checkout
-      - run: echo "preparation of deploying environment"
-  application_deployement:
+      - run: echo "Preparing deployment environment..."
+
+  # Job to deploy the application
+  deploy_application:
     executor: node/default
     steps:
       - checkout
-      - run: echo "application deployement"
-  verification_tests:
+      - run: echo "Deploying the application..."
+
+  # Job to perform verification tests
+  verify_deploy:
     executor: node/default
     steps:
       - checkout
-      - run: echo "verification tests"
-  functionning_validation_tests:
+      - run: echo "Performing verification tests..."
+
+  # Job to validate the functioning of the deployed application
+  validate_functioning:
     executor: node/default
     steps:
       - checkout
-      - run: echo "functionning validation tests"
+      - run: echo "Validating the functioning of the deployed application..."
+
+  # Job to perform charge tests
   charge_tests:
     executor: node/default
     steps:
       - checkout
-      - run: echo "charge tests"
+      - run: echo "Performing charge tests..."
+
+  # Job to deploy to development environment
   deploy_dev:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying to development environment"
+      - run: echo "Deploying to development environment..."
+
+  # Job to deploy to production environment
   deploy_prod:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying to production environment"
+      - run: echo "Deploying to production environment..."
+
+  # Job to deploy to release environment
   deploy_release:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying to release environment"
+      - run: echo "Deploying to release environment..."
+
+  # Job for monitoring
   monitoring:
     executor: node/default
     steps:
       - checkout
-      - run: echo "monitoring"
+      - run: echo "Monitoring..."
 
-###################################################################
+# Workflow definition
 workflows:
   build-test-deploy:
     jobs:
-      - dependencies_install
-      - code_analysing
-      - cleaning_packaging
-      ##############
+      # Stage 1: Install dependencies, code analysis, and clean package
+      - install_dependencies
+      - code_analysis
+      - clean_package
+
+      # Stage 2: Run unit tests, integration tests, regression tests, performance tests, security tests, and access tests
       - unit_tests:
           requires:
-            - dependencies_install
-            - code_analysing
-            - cleaning_packaging
+            - install_dependencies
+            - code_analysis
+            - clean_package
       - integration_tests:
           requires:
-            - dependencies_install
-            - code_analysing
-            - cleaning_packaging
+            - install_dependencies
+            - code_analysis
+            - clean_package
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
       - regression_tests:
           requires:
-            - dependencies_install
-            - code_analysing
-            - cleaning_packaging
+            - install_dependencies
+            - code_analysis
+            - clean_package
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
       - performance_tests:
           requires:
-            - dependencies_install
-            - code_analysing
-            - cleaning_packaging
+            - install_dependencies
+            - code_analysis
+            - clean_package
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
       - security_tests:
           requires:
-            - dependencies_install
-            - code_analysing
-            - cleaning_packaging
-
+            - install_dependencies
+            - code_analysis
+            - clean_package
       - access_tests:
           requires:
-            - dependencies_install
-            - code_analysing
-            - cleaning_packaging
+            - install_dependencies
+            - code_analysis
+            - clean_package
           filters:
             branches:
               only:
-                -master
-      ###############
-      - preparing_deploying_environment:
+                - master
+
+      # Stage 3: Prepare deployment environment, deploy application, verify deployment, validate functioning, charge tests, and deployment to different environments
+      - prepare_deploy_env:
           requires:
             - unit_tests
             - integration_tests
@@ -173,8 +206,7 @@ workflows:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
-      - application_deployement:
+      - deploy_application:
           requires:
             - unit_tests
             - integration_tests
@@ -187,8 +219,7 @@ workflows:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
-      - verification_tests:
+      - verify_deploy:
           requires:
             - unit_tests
             - integration_tests
@@ -201,8 +232,7 @@ workflows:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
-      - functionning_validation_tests:
+      - validate_functioning:
           requires:
             - unit_tests
             - integration_tests
@@ -215,7 +245,6 @@ workflows:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
       - charge_tests:
           requires:
             - unit_tests
@@ -229,95 +258,32 @@ workflows:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
       - deploy_dev:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - prepare_deploy_env
           filters:
             branches:
               only:
                 - develop
-
       - deploy_prod:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - prepare_deploy_env
           filters:
             branches:
               only:
                 - master
       - deploy_release:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - prepare_deploy_env
           filters:
             branches:
               only:
                 - /^release\/.*$/
       - monitoring:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - prepare_deploy_env
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-
-####RESTE A GERER HOTFIX ET LES TESTS APPROPRIES POUR CHAQUE BRANCHE
-
-
-##création du git flow:
-# git checkout master -> pour petre sure d'etre sur master
-# git pull -> au cas ou
-# git status -> voir si c clean
-# git remote -v -> voir si jss bien connecte
-# git checkout -b develop -> création de la branche develop
-# je code
-# git add . -> je stage mes changes
-# git commit -m "mon premier commit sur develop" -> je commit mes changes 
-# git push origin develop -> je push mes modifs sur develop distant
-# git status -> voir si c clean
-# git checkout -b feature/popo -> je cree ma branche feature/popo
-# je code
-# git add . -> je stage mes changes
-# git commit -m "mon premier commit sur feature" -> je commit mes changes 
-# git push origin feature/popo -> je push mes modifs sur feature/popo distant
-# git checkout develop -> je retourne sur develop
-# git merge feature/popo -> je merge ma feature a develop
-# git checkout -b release/1.0.0 -> je crée ma branche de release
-# je code
-# git add . -> je stage mes changes
-# git commit -m "mon premier commit sur release" -> je commit mes changes 
-# git push origin release/1.0.0 -> je push mes modifs sur release/1.0.0 distant
-# git status -> pour voir si tout est clean
-# git checkout master -> pour retourner sur master
-# git merge release/1.0.0 -> pour merger ma release a master
-# git checkout -b hotfix/probleme -> pour créer ma branche hotfix
-# je code
-# git status -> pour voir si j'ai bien des trucs a commit
-# git add --all -> pour stage mes changes
-# git commit -m "commit hotfix1" -> je commit mes changes
-# git push origin hotfix/probleme -> je push mes changements sur hotfix/probleme distant
-# git checkout master -> je reviens sur ma branche principale
-# git merge hotfix/probleme -> je merge ma branche hotfix à mon master
-# git checkout develop -> je retourne sur ma branche develop car hotfix doit etre relié à la fois a master et develop
-# git merge hotfix/probleme -> je merge ma branche hotfix à mon develop
-# git branch -D hotfix/probleme -> enfin je supprime ma branche hotfix/probleme car je n'en aurai plus besoin
