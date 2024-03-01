@@ -1,4 +1,5 @@
 # .circleci/config.yml
+
 version: 2.1
 orbs:
   node: circleci/node@5
@@ -18,6 +19,7 @@ jobs:
     steps:
       - checkout
       - run: echo "cleaning and packaging ..."
+  #################################################
   unit_tests:
     executor: node/default
     steps:
@@ -48,7 +50,7 @@ jobs:
     steps:
       - checkout
       - run: echo "access tests"
-
+  #################################################################
   
   preparing_deploying_environment:
     executor: node/default
@@ -96,13 +98,14 @@ jobs:
       - checkout
       - run: echo "monitoring"
 
+###################################################################
 workflows:
   build-test-deploy:
     jobs:
       - dependencies_install
       - code_analysing
       - cleaning_packaging
-
+      ##############
       - unit_tests:
           requires:
             - dependencies_install
@@ -156,7 +159,7 @@ workflows:
             branches:
               only:
                 -master
-  
+      ###############
       - preparing_deploying_environment:
           requires:
             - unit_tests
@@ -277,3 +280,44 @@ workflows:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
+
+####RESTE A GERER HOTFIX ET LES TESTS APPROPRIES POUR CHAQUE BRANCHE
+
+
+##création du git flow:
+# git checkout master -> pour petre sure d'etre sur master
+# git pull -> au cas ou
+# git status -> voir si c clean
+# git remote -v -> voir si jss bien connecte
+# git checkout -b develop -> création de la branche develop
+# je code
+# git add . -> je stage mes changes
+# git commit -m "mon premier commit sur develop" -> je commit mes changes 
+# git push origin develop -> je push mes modifs sur develop distant
+# git status -> voir si c clean
+# git checkout -b feature/popo -> je cree ma branche feature/popo
+# je code
+# git add . -> je stage mes changes
+# git commit -m "mon premier commit sur feature" -> je commit mes changes 
+# git push origin feature/popo -> je push mes modifs sur feature/popo distant
+# git checkout develop -> je retourne sur develop
+# git merge feature/popo -> je merge ma feature a develop
+# git checkout -b release/1.0.0 -> je crée ma branche de release
+# je code
+# git add . -> je stage mes changes
+# git commit -m "mon premier commit sur release" -> je commit mes changes 
+# git push origin release/1.0.0 -> je push mes modifs sur release/1.0.0 distant
+# git status -> pour voir si tout est clean
+# git checkout master -> pour retourner sur master
+# git merge release/1.0.0 -> pour merger ma release a master
+# git checkout -b hotfix/probleme -> pour créer ma branche hotfix
+# je code
+# git status -> pour voir si j'ai bien des trucs a commit
+# git add --all -> pour stage mes changes
+# git commit -m "commit hotfix1" -> je commit mes changes
+# git push origin hotfix/probleme -> je push mes changements sur hotfix/probleme distant
+# git checkout master -> je reviens sur ma branche principale
+# git merge hotfix/probleme -> je merge ma branche hotfix à mon master
+# git checkout develop -> je retourne sur ma branche develop car hotfix doit etre relié à la fois a master et develop
+# git merge hotfix/probleme -> je merge ma branche hotfix à mon develop
+# git branch -D hotfix/probleme -> enfin je supprime ma branche hotfix/probleme car je n'en aurai plus besoin
