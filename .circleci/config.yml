@@ -1,287 +1,316 @@
 version: 2.1
 
-# Orbs declaration
 orbs:
   node: circleci/node@5
 
-# Job definitions
+# définition des différents jobs
 jobs:
-  # Job to install project dependencies
-  install_dependencies:
+  # installation des dépendances
+  installation_dependances:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Installing project dependencies..."
+      - run: echo "installation des dépendances..."
 
-  # Job to analyze the project's code
-  code_analysis:
+  # analyse du code
+  analyse_code:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Performing code analysis..."
+      - run: echo "analyse du code..."
 
-  # Job to clean and package the project
-  clean_package:
+  # nettoyage et empaquetage
+  nettoyage_empaquetage:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Cleaning and packaging the project..."
+      - run: echo "nettoyage et empaquetage..."
 
-  # Job to run unit tests
-  unit_tests:
+  # tests unitaires
+  tests_unitaires:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running unit tests..."
+      - run: echo "exécution des tests unitaires..."
 
-  # Job to run integration tests
-  integration_tests:
+  # tests d'intégration
+  tests_integration:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running integration tests..."
+      - run: echo "exécution des tests d'intégration..."
 
-  # Job to run regression tests
-  regression_tests:
+  # tests de régression
+  tests_regression:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running regression tests..."
+      - run: echo "exécution des tests de régression..."
 
-  # Job to run performance tests
-  performance_tests:
+  # tests de performance
+  tests_performance:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running performance tests..."
+      - run: echo "exécution des tests de performance..."
 
-  # Job to run security tests
-  security_tests:
+  # tests de sécurité
+  tests_securite:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running security tests..."
+      - run: echo "exécution des tests de sécurité..."
 
-  # Job to run access tests
-  access_tests:
+  # tests d'accessibilité
+  tests_accessibilite:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running access tests..."
+      - run: echo "exécution des tests d'accessibilité..."
 
-  # Job to prepare the deployment environment
-  prepare_deploy_env:
+  # préparation environnement de déploiement
+  preparation_deployment:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Preparing deployment environment..."
+      - run: echo "préparation de l'environnement de déploiement..."
 
-  # Job to deploy the application
-  deploy_application:
+  # déploiement de l'application
+  deployment_application:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying the application..."
+      - run: echo "déploiement de l'application..."
 
-  # Job to perform verification tests
-  verify_deploy:
+  # tests de vérification
+  tests_verification:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Performing verification tests..."
+      - run: echo "exécution des tests de vérification..."
 
-  # Job to validate the functioning of the deployed application
-  validate_functioning:
+  # tests de validation fonctionnelle
+  tests_validation_fonctionnelle:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Validating the functioning of the deployed application..."
+      - run: echo "exécution des tests de validation fonctionnelle..."
 
-  # Job to perform charge tests
-  charge_tests:
+  # tests de charge
+  tests_charge:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Performing charge tests..."
+      - run: echo "exécution des tests de charge..."
 
-  # Job to deploy to development environment
-  deploy_dev:
+  # déploiement sur l'environnement de développement
+  deployment_dev:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying to development environment..."
+      - run: echo "déploiement sur l'environnement de développement..."
 
-  # Job to deploy to production environment
-  deploy_prod:
+  # déploiement sur l'environnement de production
+  deployment_prod:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying to production environment..."
+      - run: echo "déploiement sur l'environnement de production..."
 
-  # Job to deploy to release environment
-  deploy_release:
+  # déploiement sur l'environnement de release
+  deployment_release:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Deploying to release environment..."
+      - run: echo "déploiement sur l'environnement de release..."
 
-  # Job for monitoring
-  monitoring:
+  # surveillance et suivi
+  surveillance:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Monitoring..."
-
-# Workflow definition
+      - run: echo "surveillance..."
+# définition des workflows
 workflows:
+  version: 2
   build-test-deploy:
     jobs:
-      # Stage 1: Install dependencies, code analysis, and clean package
-      - install_dependencies
-      - code_analysis
-      - clean_package
-
-      # Stage 2: Run unit tests, integration tests, regression tests, performance tests, security tests, and access tests
-      - unit_tests:
+      - installation_dependances
+      - analyse_code
+      - nettoyage_empaquetage
+      # tests unitaires
+      - tests_unitaires:
           requires:
-            - install_dependencies
-            - code_analysis
-            - clean_package
-      - integration_tests:
+            - installation_dependances
+            - analyse_code
+            - nettoyage_empaquetage
+      # tests d'intégration
+      - tests_integration:
           requires:
-            - install_dependencies
-            - code_analysis
-            - clean_package
+            - installation_dependances
+            - analyse_code
+            - nettoyage_empaquetage
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - regression_tests:
+      # tests de régression
+      - tests_regression:
           requires:
-            - install_dependencies
-            - code_analysis
-            - clean_package
+            - installation_dependances
+            - analyse_code
+            - nettoyage_empaquetage
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - performance_tests:
+      # tests de performance
+      - tests_performance:
           requires:
-            - install_dependencies
-            - code_analysis
-            - clean_package
+            - installation_dependances
+            - analyse_code
+            - nettoyage_empaquetage
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - security_tests:
+      # tests de sécurité
+      - tests_securite:
           requires:
-            - install_dependencies
-            - code_analysis
-            - clean_package
-      - access_tests:
+            - installation_dependances
+            - analyse_code
+            - nettoyage_empaquetage
+      # tests d'accessibilité
+      - tests_accessibilite:
           requires:
-            - install_dependencies
-            - code_analysis
-            - clean_package
+            - installation_dependances
+            - analyse_code
+            - nettoyage_empaquetage
           filters:
             branches:
               only:
                 - master
-
-      # Stage 3: Prepare deployment environment, deploy application, verify deployment, validate functioning, charge tests, and deployment to different environments
-      - prepare_deploy_env:
+      # préparation environnement de déploiement
+      - preparation_deployment:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - deploy_application:
+      # déploiement de l'application
+      - deployment_application:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - verify_deploy:
+      # tests de vérification
+      - tests_verification:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - validate_functioning:
+      # tests de validation fonctionnelle
+      - tests_validation_fonctionnelle:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - charge_tests:
+      # tests de charge
+      - tests_charge:
           requires:
-            - unit_tests
-            - integration_tests
-            - regression_tests
-            - performance_tests
-            - security_tests
-            - access_tests
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               ignore:
                 - /^feature\/.*$/
                 - /^hotfix\/.*$/
-      - deploy_dev:
+      # déploiement sur l'environnement de développement
+      - deployment_dev:
           requires:
-            - prepare_deploy_env
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               only:
                 - develop
-      - deploy_prod:
+      # déploiement sur l'environnement de production
+      - deployment_prod:
           requires:
-            - prepare_deploy_env
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               only:
                 - master
-      - deploy_release:
+      # déploiement sur l'environnement de release
+      - deployment_release:
           requires:
-            - prepare_deploy_env
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               only:
                 - /^release\/.*$/
-      - monitoring:
+      # surveillance et suivi
+      - surveillance:
           requires:
-            - prepare_deploy_env
+            - tests_unitaires
+            - tests_integration
+            - tests_regression
+            - tests_performance
+            - tests_securite
+            - tests_accessibilite
           filters:
             branches:
               ignore:
